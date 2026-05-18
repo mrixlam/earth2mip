@@ -213,7 +213,7 @@ def open_verification(time):
 def read_weather_event(dir):
     ncfile = os.path.join(dir, "ensemble_out_00000_*.nc")
     ds = xarray.open_mfdataset(ncfile)
-    weather_event = weather_events.WeatherEvent.parse_raw(ds.weather_event)
+    weather_event = weather_events.WeatherEvent.model_validate_json(ds.weather_event)
     return weather_event
 
 def main(

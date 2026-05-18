@@ -17,7 +17,7 @@
 from pathlib import Path
 
 import pytest
-from modulus.utils import filesystem
+from physicsnemo.core import filesystem
 
 
 @pytest.fixture

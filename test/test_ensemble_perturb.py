@@ -15,6 +15,7 @@
 # limitations under the License.
 
 import datetime
+import os
 
 import pytest
 import torch
@@ -41,6 +42,14 @@ class Dummy(torch.nn.Module):
 
 
 def test_bred_vector():
+    # generate_bred_vector -> _load_optimal_targets reads the dataset at
+    # os.environ['DETERMINISTIC_RMSE'] (a site-specific optimal-perturbation
+    # targets file) and assumes a 'z500' channel. Skip when that data isn't
+    # available rather than fail.
+    rmse_path = os.environ.get("DETERMINISTIC_RMSE")
+    if not rmse_path or not os.path.exists(rmse_path):
+        pytest.skip("DETERMINISTIC_RMSE optimal-targets dataset not available")
+
     device = "cpu"
     model = Dummy().to(device)
     initial_time = datetime.datetime(2018, 1, 1)

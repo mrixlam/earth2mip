@@ -27,7 +27,7 @@ import numpy as np
 import torch
 import tqdm
 import xarray
-from modulus.distributed.manager import DistributedManager
+from physicsnemo.distributed.manager import DistributedManager
 from netCDF4 import Dataset as DS
 import torch_harmonics as th
 
@@ -195,10 +195,11 @@ def main(config=None):
 
     # If config is a file
     if os.path.exists(config):
-        config: EnsembleRun = EnsembleRun.parse_file(config)
+        with open(config) as f:
+            config: EnsembleRun = EnsembleRun.model_validate_json(f.read())
     # If string, assume JSON string
     elif isinstance(config, str):
-        config: EnsembleRun = EnsembleRun.parse_obj(json.loads(config))
+        config: EnsembleRun = EnsembleRun.model_validate(json.loads(config))
     # Otherwise assume parsable obj
     else:
         raise ValueError(
@@ -420,6 +421,12 @@ def run_inference(
     date_obj = weather_event.properties.start_time
     x = initial_conditions.get_initial_condition_for_model(model, data_source, date_obj)
 
+    # physicsnemo's DistributedManager (unlike the old modulus one) errors if
+    # instantiated before initialize(); run_inference can be called directly
+    # (not only via main()), so ensure initialization here. initialize() is
+    # idempotent.
+    if not DistributedManager.is_initialized():
+        DistributedManager.initialize()
     dist = DistributedManager()
     n_ensemble_global = config.ensemble_members
     n_ensemble = n_ensemble_global // dist.world_size
@@ -446,7 +453,7 @@ def run_inference(
         # Only rank 0 copies config files over
         config_path = os.path.join(output_path, "config.json")
         with open(config_path, "w") as f:
-            f.write(config.json())
+            f.write(config.model_dump_json())
 
     group_rank = torch.distributed.get_group_rank(group, dist.rank)
     try:
@@ -460,8 +467,8 @@ def run_inference(
     with DS(output_file_path, "w", format="NETCDF4") as nc:
         # assign global attributes
         nc.model = config.weather_model
-        nc.config = config.json()
-        nc.weather_event = weather_event.json()
+        nc.config = config.model_dump_json()
+        nc.weather_event = weather_event.model_dump_json()
         nc.date_created = datetime.now().isoformat()
         nc.history = " ".join(sys.argv)
         nc.institution = "NVIDIA"

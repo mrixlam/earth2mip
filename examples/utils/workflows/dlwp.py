@@ -19,7 +19,7 @@ import datetime
 import os
 from os.path import join
 
-from modulus.distributed import DistributedManager
+from physicsnemo.distributed import DistributedManager
 
 import earth2mip.networks.dlwp as dlwp
 from earth2mip import (

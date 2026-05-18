@@ -17,12 +17,12 @@
 import datetime
 import logging
 
-import modulus
+import physicsnemo
 import numpy as np
 import torch
 import xarray
-from modulus.utils.filesystem import Package
-from modulus.utils.zenith_angle import cos_zenith_angle
+from physicsnemo.core.filesystem import Package
+from physicsnemo.utils.zenith_angle import cos_zenith_angle
 
 import earth2mip.grid
 
@@ -235,7 +235,7 @@ def load(package: Package, *, pretrained=True, device="cuda"):
     cs_to_ll_mapfile_path = package.get("map_CS64_LL721x1440.nc")
 
     with torch.cuda.device(device):
-        core_model = modulus.Module.from_checkpoint(package.get("dlwp.mdlus"))
+        core_model = physicsnemo.Module.from_checkpoint(package.get("dlwp.mdlus"))
         model = _DLWPWrapper(
             core_model,
             lsm,

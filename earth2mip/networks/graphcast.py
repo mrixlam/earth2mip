@@ -45,7 +45,7 @@ from graphcast import (
 )
 from graphcast.data_utils import add_derived_vars
 from graphcast.rollout import _get_next_inputs
-from modulus.utils import zenith_angle
+from physicsnemo.utils import zenith_angle
 
 import earth2mip.grid
 from earth2mip import time_loop
@@ -205,10 +205,10 @@ def get_forcings(time, lat, lon):
 
     # put data on same device as lat
     if isinstance(lat, jax.Array):
-        forcings = jax.tree_map(
-            lambda x: jax.device_put(x, device=lat.device()), forcings
+        forcings = jax.tree_util.tree_map(
+            lambda x: jax.device_put(x, device=lat.device), forcings
         )
-        seconds_since_epoch = jax.device_put(seconds_since_epoch, device=lat.device())
+        seconds_since_epoch = jax.device_put(seconds_since_epoch, device=lat.device)
 
     forcings["toa_incident_solar_radiation"] = _get_tisr(seconds_since_epoch, lat, lon)
 

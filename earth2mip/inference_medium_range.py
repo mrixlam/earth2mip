@@ -25,7 +25,7 @@ import numpy as np
 import pandas as pd
 import torch
 import xarray as xr
-from modulus.distributed.manager import DistributedManager
+from physicsnemo.distributed.manager import DistributedManager
 
 import earth2mip.forecast_metrics_io
 from earth2mip import _cli_utils, config, initial_conditions, time_loop

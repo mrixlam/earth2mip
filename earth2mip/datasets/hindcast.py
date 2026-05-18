@@ -20,9 +20,9 @@ import datetime
 import json
 import os
 
+import fsspec
 import pandas as pd
 import xarray
-from zarr.storage import FSStore
 
 from earth2mip import filesystem
 from earth2mip.datasets.zarr_directory import NestedDirectoryStore
@@ -38,7 +38,10 @@ def open_forecast(root, group, chunks=None):
 
     """
     if isinstance(root, str):
-        map_ = FSStore(url=root)
+        # zarr 3.x removed zarr.storage.FSStore; NestedDirectoryStore needs a
+        # MutableMapping, which fsspec.get_mapper provides (this is what v2's
+        # FSStore wrapped anyway). zarr 3's FsspecStore is async, not a mapping.
+        map_ = fsspec.get_mapper(root)
     else:
         map_ = root
 

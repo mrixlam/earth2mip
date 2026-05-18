@@ -19,7 +19,7 @@ FCN adapter from Modulus
 """
 import datetime
 
-import modulus
+import physicsnemo
 import numpy as np
 
 import earth2mip.grid
@@ -61,7 +61,7 @@ def load(package, *, pretrained=True, device="cuda"):
     local_center = np.load(package.get("global_means.npy"))
     local_std = np.load(package.get("global_stds.npy"))
 
-    core_model = modulus.Module.from_checkpoint(package.get("fcn.mdlus"))
+    core_model = physicsnemo.Module.from_checkpoint(package.get("fcn.mdlus"))
 
     dt = datetime.timedelta(hours=6)
     grid = earth2mip.grid.equiangular_lat_lon_grid(720, 1440, includes_south_pole=False)

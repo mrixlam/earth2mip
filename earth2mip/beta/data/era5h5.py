@@ -27,8 +27,8 @@ import numpy as np
 import s3fs
 import xarray as xr
 from loguru import logger
-from modulus.distributed.manager import DistributedManager
-from modulus.utils.filesystem import _download_cached
+from physicsnemo.distributed.manager import DistributedManager
+from physicsnemo.core.filesystem import _download_cached
 
 from earth2mip import config
 from earth2mip.networks.fcnv2_sm import CHANNELS

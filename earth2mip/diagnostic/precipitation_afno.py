@@ -16,12 +16,12 @@
 
 import os
 
-import modulus
+import physicsnemo
 import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from modulus.models.afno import AFNO
+from physicsnemo.models.afno import AFNO
 
 from earth2mip import config, grid
 from earth2mip.diagnostic.base import DiagnosticBase
@@ -71,7 +71,7 @@ class PeriodicPad2d(nn.Module):
         return out
 
 
-class PrecipNet(modulus.Module):
+class PrecipNet(physicsnemo.Module):
     def __init__(
         self,
         inp_shape,

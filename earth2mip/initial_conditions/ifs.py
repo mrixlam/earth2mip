@@ -21,7 +21,7 @@ from typing import List
 
 import numpy as np
 import xarray
-from modulus.utils import filesystem
+from physicsnemo.core import filesystem
 
 import earth2mip.grid
 from earth2mip.datasets.era5 import METADATA

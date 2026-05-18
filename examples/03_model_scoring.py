@@ -89,7 +89,7 @@ h5_folder = os.getenv("ERA5_HDF5")
 # H5 files described above.
 
 # %%
-from modulus.distributed import DistributedManager
+from physicsnemo.distributed import DistributedManager
 
 from earth2mip import registry
 from earth2mip.networks import dlwp

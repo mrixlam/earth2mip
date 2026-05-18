@@ -22,7 +22,7 @@ from typing import Any, Callable, Iterator, Optional, Tuple
 
 import numpy as np
 import torch
-from modulus.utils.zenith_angle import cos_zenith_angle
+from physicsnemo.utils.zenith_angle import cos_zenith_angle
 
 import earth2mip.grid
 from earth2mip import (
@@ -152,7 +152,7 @@ class Inference(torch.nn.Module, time_loop.TimeLoop):
         self.time_dependent = depends_on_time(model.forward)
 
         # TODO probably delete this line
-        # if not isinstance(model, modulus.Module):
+        # if not isinstance(model, physicsnemo.Module):
         #     model = Wrapper(model)
 
         # TODO extract this to another place
@@ -310,7 +310,7 @@ def _load_package(package, metadata, device) -> time_loop.TimeLoop:
     if metadata is None:
         local_path = package.get("metadata.json")
         with open(local_path) as f:
-            metadata = schema.Model.parse_raw(f.read())
+            metadata = schema.Model.model_validate_json(f.read())
 
     if metadata.entrypoint:
         ep = EntryPoint(name=None, group=None, value=metadata.entrypoint.name)

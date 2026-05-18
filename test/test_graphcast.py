@@ -51,7 +51,7 @@ def test_get_forcings_jax():
     inputs = get_forcings(time, lat, lon)
     for v in inputs:
         v = xarray_jax.jax_data(inputs[v])
-        assert v.device() == lat.device()
+        assert v.device == lat.device
 
 
 def test_get_channel_names():

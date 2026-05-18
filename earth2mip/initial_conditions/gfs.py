@@ -26,7 +26,7 @@ from typing import Dict, List, Union
 import numpy as np
 import requests
 import xarray
-from modulus.utils.filesystem import LOCAL_CACHE
+from physicsnemo.core.filesystem import LOCAL_CACHE
 from tqdm import tqdm
 
 import earth2mip.grid
@@ -38,7 +38,7 @@ logger = logging.getLogger(__name__)
 # Will error if larger
 MAX_BYTE_SIZE = 2000000
 # Location to cache grib files
-GFS_CACHE = LOCAL_CACHE + "/earth2mip/gfs"
+GFS_CACHE = os.path.join(LOCAL_CACHE, "earth2mip", "gfs")
 
 
 @dataclass

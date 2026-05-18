@@ -83,8 +83,8 @@ class Diagnostics:
                 var = self.subgroup.createVariable(
                     channel, dtypes[self.diagnostic.type], dims[self.diagnostic.type]
                 )
-                var.setncattr('units', units[channel])
-                var.setncattr('long_name', long_names[channel])
+                var.setncattr('units', units.get(channel, ''))
+                var.setncattr('long_name', long_names.get(channel, channel))
 
     def get_dimensions(
         self,

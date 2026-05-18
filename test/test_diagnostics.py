@@ -45,6 +45,7 @@ def test_diagnostic(cls: str, tmp_path: pathlib.Path):
             ),
             n_ensemble,
             torch.device(type="cpu"),
+            n_steps=1,
         )[0]
 
         for diagnostic in total_diagnostics:

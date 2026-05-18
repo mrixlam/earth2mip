@@ -17,7 +17,9 @@
 import datetime
 import hashlib
 import pathlib
+import shutil
 import subprocess
+import sys
 from test.initial_conditions.test_hdf5 import create_hdf5
 
 import numpy as np
@@ -41,7 +43,14 @@ from earth2mip.networks import get_model, persistence
 
 
 def run(args):
-    return subprocess.check_call(["coverage", "run", *args])  # noqa: S603 S607
+    # Use `coverage run` when available (CI), else fall back to the current
+    # interpreter so these CLI tests don't hard-require the coverage tool
+    # (it is only a [dev] extra).
+    if shutil.which("coverage"):
+        cmd = ["coverage", "run", *args]
+    else:
+        cmd = [sys.executable, *args]
+    return subprocess.check_call(cmd)  # noqa: S603 S607
 
 
 def checksum_reduce_precision(arr, digits=3):
@@ -97,7 +106,11 @@ def test_inference_ensemble(tmp_path):
         inference, config, data_source=data_source, progress=True
     )
 
-    path = tmp_path / "ensemble_out_0.nc"
+    # run_inference writes ensemble_out_<rank:05d>_<date>.nc (the scoring
+    # modules locate these via the same glob); the old fixed name is stale.
+    outputs = sorted(tmp_path.glob("ensemble_out_*.nc"))
+    assert outputs, "run_inference did not write an ensemble_out_*.nc file"
+    path = outputs[0]
     ds = xarray.open_dataset(path.as_posix(), decode_times=False)
     assert ds.time[0].item() == 0
     out = tmp_path / "out"
@@ -143,6 +156,8 @@ def test_inference_medium_range(tmpdir, regtest):
 @pytest.mark.slow
 @pytest.mark.parametrize("url", ["e2mip://fcn", "e2mip://dlwp"])
 def test_run_basic_inference(url):
+    if not torch.cuda.is_available():
+        pytest.skip("test_run_basic_inference requires a CUDA device")
     time_loop = get_model(url, device="cuda:0")
     data_source = get_data_source(time_loop)
     ds = run_basic_inference(
@@ -153,6 +168,8 @@ def test_run_basic_inference(url):
 
 @pytest.mark.cli
 def test_inference_medium_range_cli(tmp_path: pathlib.Path):
+    if not torch.cuda.is_available():
+        pytest.skip("inference_medium_range CLI requires a CUDA device")
     create_hdf5(
         tmp_path,
         2018,
@@ -183,6 +200,9 @@ def test_inference_medium_range_cli(tmp_path: pathlib.Path):
 
 @pytest.mark.cli
 def test_lagged_ensemble_cli(tmp_path: pathlib.Path):
+    if not torch.cuda.is_available():
+        pytest.skip("lagged_ensembles CLI requires a CUDA device")
+    pytest.importorskip("cupy", reason="lagged_ensembles CLI requires cupy")
     create_hdf5(
         tmp_path,
         2018,

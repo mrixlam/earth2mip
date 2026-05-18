@@ -32,11 +32,21 @@ def get_gpu_count():
 def has_registry():
     if not config.MODEL_REGISTRY:
         pytest.skip("MODEL_REGISTRY not configured.")
+    # MODEL_REGISTRY has a default path, so being "configured" is not enough:
+    # skip when the registry has no models (they require an NGC download).
+    from earth2mip import registry
+
+    try:
+        models = registry.list_models()
+    except Exception as e:  # noqa: BLE001
+        pytest.skip(f"model registry unavailable: {e}")
+    if not models:
+        pytest.skip("model registry is empty (no models downloaded)")
 
 
 @pytest.fixture()
 def dist():
-    from modulus.distributed.manager import DistributedManager
+    from physicsnemo.distributed.manager import DistributedManager
 
     DistributedManager.initialize()
     return DistributedManager()

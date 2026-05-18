@@ -17,7 +17,7 @@
 import datetime
 import logging
 
-from modulus.distributed.manager import DistributedManager
+from physicsnemo.distributed.manager import DistributedManager
 
 from earth2mip.diagnostic import DiagnosticTimeLoop, PrecipitationAFNO
 from earth2mip.inference_ensemble import run_basic_inference

@@ -49,7 +49,7 @@ dotenv.load_dotenv()
 # :code:`load_package()` function can do this for you.
 
 # %%
-from modulus.distributed.manager import DistributedManager
+from physicsnemo.distributed.manager import DistributedManager
 from earth2mip.networks import get_model
 from earth2mip.diagnostic import PrecipitationAFNO
 

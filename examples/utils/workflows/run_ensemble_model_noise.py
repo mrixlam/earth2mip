@@ -18,7 +18,7 @@ import logging
 from functools import partial
 
 import torch
-from modulus.distributed.manager import DistributedManager
+from physicsnemo.distributed.manager import DistributedManager
 
 from earth2mip.ensemble_utils import brown_noise
 from earth2mip.inference_ensemble import get_initializer, run_inference
@@ -65,7 +65,7 @@ def main():
         "perturbation_strategy": "correlated",
         "noise_reddening": 2.0,
     }
-    config = EnsembleRun.parse_obj(config_dict)
+    config = EnsembleRun.model_validate(config_dict)
     logging.basicConfig(level=logging.INFO)
 
     # Set up parallel

@@ -20,7 +20,7 @@ import os
 from os.path import join
 
 import numpy as np
-from modulus.distributed import DistributedManager
+from physicsnemo.distributed import DistributedManager
 
 import earth2mip.networks.fcn as fcn
 from earth2mip import inference_ensemble, registry

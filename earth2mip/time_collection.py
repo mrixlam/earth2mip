@@ -23,7 +23,7 @@ import shutil
 import torch.distributed
 import typer
 from distributed import Client
-from modulus.distributed.manager import DistributedManager
+from physicsnemo.distributed.manager import DistributedManager
 from functools import partial
 from earth2mip.ensemble_utils import CorrelatedSphericalField
 
@@ -88,7 +88,7 @@ def main(
         f"Working on shard {shard+1}/{n_shards}. {len(lines)} initial times to run."
     )
 
-    run = EnsembleRun.parse_obj(protocol["inference_template"])
+    run = EnsembleRun.model_validate(protocol["inference_template"])
     n_ensemble_batches = run.ensemble_members // run.ensemble_batch_size
     ranks_per_time = min(n_ensemble_batches, dist.world_size)
     ranks_per_time = ranks_per_time - dist.world_size % ranks_per_time

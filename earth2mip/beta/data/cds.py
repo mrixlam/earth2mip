@@ -26,7 +26,7 @@ import cdsapi
 import numpy as np
 import xarray as xr
 from loguru import logger
-from modulus.distributed.manager import DistributedManager
+from physicsnemo.distributed.manager import DistributedManager
 from tqdm import tqdm
 
 from earth2mip import config

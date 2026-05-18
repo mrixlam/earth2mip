@@ -183,9 +183,21 @@ class GaussianRandomFieldS2(torch.nn.Module):
         if sigma is None:
             sigma = tau ** (0.5 * (2 * alpha - 2.0))
 
-        # Inverse SHT
+        # Inverse SHT. lmax/mmax are passed explicitly: torch_harmonics>=0.8.1
+        # changed the default truncation for equiangular grids to (nlat+1)//2
+        # and clamps mmax<=lmax. This GRF uses (nlat, nlat) spectral
+        # coefficients; the previous (nlat, nlat+1) layout's extra m=nlat
+        # column was always zeroed by the torch.tril below (max l index is
+        # nlat-1), so this is mathematically equivalent.
         self.isht = (
-            InverseRealSHT(self.nlat, 2 * self.nlat, grid=grid, norm="backward")
+            InverseRealSHT(
+                self.nlat,
+                2 * self.nlat,
+                lmax=self.nlat,
+                mmax=self.nlat,
+                grid=grid,
+                norm="backward",
+            )
             .to(dtype=dtype)
             .to(device=device)
         )
@@ -194,7 +206,7 @@ class GaussianRandomFieldS2(torch.nn.Module):
         sqrt_eig = (
             torch.tensor([j * (j + 1) for j in range(self.nlat)], device=device)
             .view(self.nlat, 1)
-            .repeat(1, self.nlat + 1)
+            .repeat(1, self.nlat)
         )
         sqrt_eig = torch.tril(
             sigma * (((sqrt_eig / radius**2) + tau**2) ** (-alpha / 2.0))
@@ -218,7 +230,7 @@ class GaussianRandomFieldS2(torch.nn.Module):
         N : int
             Number of functions to sample.
         xi : torch.Tensor, default is None
-            Noise is a complex tensor of size (N, nlat, nlat+1).
+            Noise is a complex tensor of size (N, nlat, nlat).
             If None, new Gaussian noise is sampled.
             If xi is provided, N is ignored.
 
@@ -232,7 +244,7 @@ class GaussianRandomFieldS2(torch.nn.Module):
         if xi is None:
             gaussian_noise = torch.distributions.normal.Normal(self.mean, self.var)
             xi = gaussian_noise.sample(
-                torch.Size((N, self.nlat, self.nlat + 1, 2))
+                torch.Size((N, self.nlat, self.nlat, 2))
             ).squeeze()
             xi = torch.view_as_complex(xi)
 

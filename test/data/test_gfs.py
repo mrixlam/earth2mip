@@ -105,7 +105,8 @@ def test_gfs_cache(time, channel, cache):
 @pytest.mark.parametrize(
     "time",
     [
-        datetime.datetime(year=2021, month=2, day=25),
+        # well before the noaa-gfs-bdp-pds S3 archive (which starts ~Feb 2021)
+        datetime.datetime(year=1980, month=1, day=1),
         datetime.datetime(year=2023, month=1, day=1, hour=13),
         datetime.datetime.now(),
     ],

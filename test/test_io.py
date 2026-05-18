@@ -40,4 +40,5 @@ def test_initialize_netcdf(tmp_path):
             ),
             n_ensemble,
             torch.device(type="cpu"),
+            n_steps=1,
         )
