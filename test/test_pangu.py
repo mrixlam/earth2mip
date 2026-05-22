@@ -16,9 +16,11 @@
 
 import datetime
 
+import pytest
 import torch
 
-from earth2mip.networks import pangu
+pytest.importorskip("onnxruntime", reason="pangu extra not installed")
+from earth2mip.networks import pangu  # noqa: E402
 
 
 class MockPangu(pangu.PanguWeather):

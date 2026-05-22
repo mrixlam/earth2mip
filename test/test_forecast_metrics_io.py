@@ -50,4 +50,7 @@ def test_write_and_read_metric(tmpdir):
         names=["initial_time", "lead_time", "channel", "metric"],
     )
     expected_value = pd.Series([value], index=expected_index, name="value")
-    pd.testing.assert_series_equal(metrics, expected_value)
+    # check_index_type=False tolerates timedelta64 resolution differences
+    # (pandas 3.x may store lead_time as [s] vs the test tuple's [us]); the
+    # index *values* are still compared exactly.
+    pd.testing.assert_series_equal(metrics, expected_value, check_index_type=False)

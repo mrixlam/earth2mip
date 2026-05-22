@@ -13,11 +13,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import jax
-import jax.numpy
 import numpy as np
 import pytest
-from graphcast import xarray_jax
+
+jax = pytest.importorskip("jax", reason="graphcast extra not installed")
+import jax.numpy  # noqa: E402
+
+pytest.importorskip("graphcast", reason="graphcast extra not installed")
+from graphcast import xarray_jax  # noqa: E402
 
 from earth2mip.model_registry import Package
 from earth2mip.networks import graphcast

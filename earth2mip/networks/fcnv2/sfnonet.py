@@ -19,7 +19,14 @@ from functools import partial
 import torch
 import torch.nn as nn
 import torch_harmonics as harmonics
-from apex.normalization import FusedLayerNorm
+
+try:
+    from apex.normalization import FusedLayerNorm
+except ImportError:
+    # apex is a CUDA-only optional dependency; fall back to torch's LayerNorm.
+    # FusedLayerNorm is only used in an isinstance() check below, so a plain
+    # LayerNorm alias is sufficient when apex is unavailable.
+    from torch.nn import LayerNorm as FusedLayerNorm
 
 # helpers
 # to fake the sht module with ffts

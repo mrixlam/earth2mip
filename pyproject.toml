@@ -24,7 +24,7 @@ dependencies = [
     "ecmwflibs>=0.5.2",
     "ecmwf-opendata>=0.2.0",
     "einops",
-    "fsspec",
+    "fsspec>=2023.1.0",
     "h5py>=3.2.0",
     "h5netcdf>=1.0.0",
     "importlib_metadata>=6.7.0",
@@ -42,12 +42,14 @@ dependencies = [
     "pytest-regtest",
     "pytest>=7.0.0",
     "python-dotenv>=1.0.0",
-    "s3fs",
+    "ruamel.yaml>=0.17.0",  # used by earth2mip/networks/fcnv2/yparams.py
+    "s3fs>=2023.1.0",
     "setuptools >= 38.4",  # For pkg_resources
     "torch>=1.13",
     "torch_harmonics>=0.5.0",
     "tqdm>=4.65.0",
     "typer",
+    "warp-lang<1.13",  # 1.13 removed warp.context, which nvidia-physicsnemo 2.0 still uses
     "xarray",
     "xskillscore >= 0.0.24",
     "zarr>=2.14.2",

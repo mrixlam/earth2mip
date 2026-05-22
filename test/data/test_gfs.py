@@ -108,7 +108,8 @@ def test_gfs_cache(time, channel, cache):
         # well before the noaa-gfs-bdp-pds S3 archive (which starts ~Feb 2021)
         datetime.datetime(year=1980, month=1, day=1),
         datetime.datetime(year=2023, month=1, day=1, hour=13),
-        datetime.datetime.now(),
+        # well in the future: no forecast cycle has been published for it yet
+        datetime.datetime.now() + datetime.timedelta(days=365),
     ],
 )
 @pytest.mark.parametrize("channel", ["mpl"])

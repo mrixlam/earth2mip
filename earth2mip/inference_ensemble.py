@@ -455,11 +455,17 @@ def run_inference(
         with open(config_path, "w") as f:
             f.write(config.model_dump_json())
 
-    group_rank = torch.distributed.get_group_rank(group, dist.rank)
-    try:
-        group_size = len(torch.distributed.get_process_group_ranks(group))
-    except KeyError:
-        logger.warning("Assuming group size is 1")
+    if torch.distributed.is_initialized():
+        group_rank = torch.distributed.get_group_rank(group, dist.rank)
+        try:
+            group_size = len(torch.distributed.get_process_group_ranks(group))
+        except KeyError:
+            logger.warning("Assuming group size is 1")
+            group_size = 1
+    else:
+        # Single-process run: physicsnemo's DistributedManager does not call
+        # init_process_group, so there is no default process group to query.
+        group_rank = 0
         group_size = 1
     date_str = "{:%Y-%m-%d-%H-%M-%S}".format(date_obj)
     output_file_path = os.path.join(output_path, f"ensemble_out_{group_rank + model_idx * group_size:05d}_{date_str}.nc")
